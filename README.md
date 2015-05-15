@@ -1,5 +1,5 @@
 # park-montreal
-Application web (et mobile prochainement) qui permet de trouver les places de stationnement autorisées dans un moment donné dans les rues les plus proches (tient en compte les restrictions de stationnement indiquées dans les panneaux)
+**Application** web (et mobile prochainement) qui permet de **trouver les places de stationnement autorisées** dans les rues les plus proches (tient en compte les **restrictions de stationnement** indiquées dans les panneaux) en **séléctionnant l'heure et la date**
 
 Pour **tester** l'appli : http://adam.cherti.name/stationnement
 
