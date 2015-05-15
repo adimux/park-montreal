@@ -10,7 +10,7 @@ Malheureusement, les données des parcomètres ne sont pas ouvertes pour le mome
 
 # Description des fichiers 
 
-~Front-end :~
+~~Front-end :~~
 /application : c'est l'application en html5 qui affiche les places de stationnement autorisés/interdits
 
 ~Back-end :~
