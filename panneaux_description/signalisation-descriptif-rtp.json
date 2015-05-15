@@ -1,0 +1,82 @@
+[
+{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"1- Tige et base"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"10- Fût et feux"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"11- Pot. bois/feux"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"12- Balise"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"13- Poteau en acier"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"14- Poteau en barre métallique"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"15- Manchon"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"16- Tige et base double"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"17- Tige et manchon double"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"18- Viaduc"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"19- Délinéateur"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"2- Tige et manchon"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"20- Fût et potence"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"3- Fût"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"4- Poteau en bois"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"5- Cable aérien"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"6- Base amovible"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"7- Console"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"8- Pilier"
+}
+,{
+"json_featuretype":"signalisation-descriptif-rtp"
+,"DESCRIPTION_RTP":"9- Autres"
+}
+]

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			html,body,#map-canvas
+			{
+				height:100%;
+				margin:0;padding:0;
+			}
+		</style>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />	
+		<title>index2</title>
+		
+		<script type="text/javascript"
+		  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcPswPf-CHjpRLEqDYPj7hBeycynREWpY">
+	    </script>	
+		<script>
+function detectBrowser() {
+	var useragent = navigator.userAgent;
+	var mapdiv = document.getElementById("map-canvas");
+/*
+	if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1 ) {
+		mapdiv.style.width = '100%';
+		mapdiv.style.height = '100%';
+	} else {
+		mapdiv.style.width = '600px';
+		mapdiv.style.height = '800px';
+	}*/
+}
+
+function init()
+{
+	detectBrowser();
+	var styleArray = [
+	{
+/*		featureType: 'road',
+		elementType : 'geometry.fill',
+		stylers:[
+			{color : '#ff0000'},
+			]*/
+	}
+		];
+	
+	var controlDiv = document.createElement('div');
+	controlDiv.style.padding="5px";
+	var controlUI = document.createElement('div');
+	controlUI.style.backgroundColor = 'black';
+	controlUI.style.borderStyle = 'solid';
+	controlUI.style.borderWidth = '2px';
+	controlUI.style.brderColor ='grey';
+	controlUI.style.cursor = 'pointer';
+	controlUI.style.textAlign ='center';
+	controlUI.title ='Click to set the map to home';
+	controlDiv.appendChild(controlUI);
+	
+// Set CSS for the control interior.
+var controlText = document.createElement('div');
+controlText.style.fontFamily = 'Arial,sans-serif';
+controlText.style.fontSize = '12px';
+controlText.style.color ='white';
+controlText.style.paddingLeft = '4px';
+controlText.style.paddingRight = '4px';
+
+var savehome = document.createElement('a');
+savehome.innerHTML = 'Click to save home';
+//controlText.innerHTML = '<a id="savehome">Click to save home</a>';
+//controlText.innerHTML += '<strong><a id="gohome">Go Home</a></strong>';
+var gohome = document.createElement('a');
+gohome.innerHTML = 'Go home';
+
+	controlText.appendChild(savehome);
+	controlText.appendChild(document.createElement('br'));
+	
+	if( localStorage.getItem('homelat') && localStorage.getItem('homelng') )
+		controlText.appendChild(gohome);
+
+	controlUI.appendChild(controlText);	
+	
+	controlDiv.index = 1;
+//	var centerPos = new google.maps.LatLng(localStorage.getItem('homelat') ||lat, localStorage.getItem('homelng')||lng);
+	
+	var mapOptions = { zoom : 8, styles:styleArray, disableDefaultUI:true, zoomControl:true, };
+	var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	
+	f_gohome();
+	
+	map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+	
+	map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/get/troncons.php");
+	map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/get/poteaux.php");
+
+//	map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/ARRONDISSEMENTS/limadmin.json");
+
+	//map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/GEOBASE/sens_circ.json");
+	
+	
+	var infoWindow = new google.maps.InfoWindow();
+/*	map.data.setStyle(
+			function (feature)
+			{
+	//		var CODE_ID = feature.getProperty("CODEID");
+	//		var NOM = feature.getProperty("NOM");
+			var strokec = "blue";
+			if(feature.getProperty("TYP_VOIE") === undefined)
+			strokec = "green";
+			return {
+//				label : NOM,
+				fillOpacity:0.4,
+				strokeColor:strokec,
+				strokeWeight:3,
+				fillColor:"orange",
+				strokeOpacity:0.7,
+				};
+				})*/;
+	map.data.addListener('click', function(event)
+			{
+				var feature = event.feature;
+				//var CODE_ID = feature.getProperty("CODEID");
+				//var NOM = feature.getProperty("NOM");	
+				//alert('you clicked!');
+				//var content_string = CODE_ID + " "+NOM;
+				
+				//var content_string = feature.getProperty("TYP_VOIE")+ feature.getProperty("NOM_VOIE") + feature.getProperty("ID_TRC");
+				
+				var content_string = feature.getProperty("ID_TRC");
+				content_string +=" "+feature.getProperty("TYP_VOIE")+ " "+feature.getProperty("NOM_VOIE");
+				content_string += " "+feature.getProperty("NOM") + " poteau:"+feature.getProperty("POTEAU_ID_POT")+ ", TRC ID : "+feature.getProperty("TRC_ID");
+				
+				infoWindow.setContent(content_string);
+				infoWindow.setPosition(event.latLng);
+				infoWindow.open(map);
+			});
+	google.maps.event.addDomListener(savehome, 'click', function()
+			{
+				localStorage.setItem('homelat',map.getCenter().lat());
+				localStorage.setItem('homelng',map.getCenter().lng());	
+			});
+	google.maps.event.addDomListener(gohome, 'click', function()
+			{
+				f_gohome();
+			});
+function f_gohome()
+{
+	var lat = 45.553349634491; var lng =-73.611958006357;
+//	lat = localStorage.getItem('homelat');
+//	lng = localStorage.getItem('homelng')
+
+	var centerPos = new google.maps.LatLng(lat,lng);
+	//centerPos = new google.maps.LatLng( 45.54139872662906,-73.63727430438747 );
+	if(!isNaN(centerPos.lat()) && !isNaN(centerPos.lng()))
+	{
+		map.setCenter(centerPos);
+		map.setZoom(20);	
+	}
+	
+}
+}
+google.maps.event.addDomListener(window, 'load', init);
+		</script>
+	</head>
+	<body>
+		<div id="map-canvas">
+		</div>
+	</body>
+</html>

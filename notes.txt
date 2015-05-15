@@ -1,0 +1,319 @@
+IDEAS :
+when you stop your car, it remembers your pos
+when you stop and park, it says "did you park ?" (crowdsourcing)
+        + counts minutes if with money
+    when return to car, it says "are you returning home ?"
+    
+Convex hull
+    
+Système de points (+1) si quelqu'un reporte bcp de trucs
+et de niveaux
+Système de réputation pour ceux qui marquent beaucoup de choses 
+
+
+GPS WGS84 (deg) : c'est le bon (lat, lng ) pas lng lat
+lat = N lng = E
+NAD 1983 (CSRS) MTM zone 8 : le nul
+
+http://tinygeocoder.com/blog/about/
+
+https://developers.google.com/maps/documentation/javascript/tutorial
+http://twcc.fr/#
+http://leware.net/geo/utmgoogle.htm
+https://github.com/JasonSanford/geojson-google-maps/blob/master/README.md
+https://books.google.ca/books?id=U2JmghrrB8cC&pg=PA59&lpg=PA59&dq=UTM+to+MTM+coordinates+canada&source=bl&ots=9LyRsSXKEW&sig=Ylu4lZR5HUgjYUHYTixjXQ1_Xxo&hl=fr&sa=X&ei=GuqxVOzLL9PYggTfw4CwAw&ved=0CGQQ6AEwCA#v=onepage&q=UTM%20to%20MTM%20coordinates%20canada&f=false
+http://www.cef-cfr.ca/uploads/Reference/ProjectionCartoNum.pdf
+http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system#Locating_a_position_using_UTM_coordinates
+http://stackoverflow.com/questions/10323150/with-google-maps-api-v3-determine-if-a-marker-is-inside-a-kml-layer-boundary
+
+Signalisation descrip panneau : C'est les panneaux dans chaque poteau
+Panneau avec code_rpa et poteau_id_pot et panneau_id_pan puis
+un texte description_rpa
+fleche_pan et position_pop (rien compris)
+
+Signalisation descriptif :
+-RPA : descr des panneaux (abstraits)
+CODE_RPA
+DESCRIPTION_RPA
+-RTP : descr des poteaux (matériels) : ne sert à rien
+description_rtp "3- Fût"  <<----------------------------
+                                                        |
+Signalisation geoloc (quartier) :                       |
+--- Montre où sont les poteaux dans chaque quartier     |
+geometry contient les coords                            |
+properties contient                                     |
+--> poteau_id_pot                                       |
+|   DATE_CONCEPTION_POT format YYYYMMDD000000           |
+|   DESCRIPTION_REP : "réel/en conception/Enlevé"       |
+|   DESCRIPTION_RTP : "3- Fût"  =========================
+|   X : easting
+|   Y : northing
+|   ID_ARRONDISSEMENT : l'id de l'arrondissement
+|   TRC_ID : tronçon est une portion d'une route (qui change à chaque virage,intersection,etc.)
+|    
+Signalisation description panneau :
+|  associe panneaux avec leur poteau un poteau peut avoir bcp de pan
+|--POTEAU_ID_POT
+   PANNEAU_ID_PAN
+   DESCRIPTION_RPA 
+   CODE_RPA : code du penneau
+   FLECHE PAN (?)
+   POSITION_POP (?)
+    
+    
+ID ARRONDISSEMENTs
+
+IMPORTANT :
+A.* (interdit arrêt)
+\A EN TOUT TEMPS
+\A POMPIER URGENCE
+\A 16h-18h30 LUN. AU VEN.	
+\A 07h-09h30  15h30-17h30 LUN. AU VEN.
+\A 07h30-17h JOURS D`ECOLE	
+\A 07h-18h LUN A VEN SEPT. A JUIN
+\A RESERVE AUTOBUS
+\A RESERVE AUTOBUS 07h-09h30 LUN. AU VEN.
+
+S.* (interdit stat)
+\P EN TOUT TEMPS
+\P LIVRAISON SEULEMENT EN TOUT TEMPS
+\P EN TOUT TEMPS (TEMPORAIRE - PANNEAU)
+\P 09h30-10h30 MAR. VEN. 1 MARS AU 1 DEC.
+\P 13h-16h LUN. AU VEN.
+\P 08h-17h LUN A VEN SEPT A JUIN
+
+E.* (interdit stat entretien)
+\P 07h-19h CLIGNOTANT 19h-07h FIXE
+\P ENTRETIEN (ORANGE) 07h-19h ou 19h-07h (flexible)
+
+P.* stationnement permis à durée limitée
+- PP tarifié
+- PX pannonceau
+-PA autocollant pour tige de parcomètre
+PRE-SIGNAL ZONE SCOLAIRE COULEUR JAUNE FLUO
+-PC (très peu)
+autocollant pour tête de parcomètre sans restriction de stationnement
+P 03h LUN ET MAR  JEU ET VEN
+AUTOCOL. H.D'USAGE L. MAR. MER. SAM. 09h-18h JEU. ...
+-PR (très peu) OSEF
+	autocollant pour tête
+	de parcomètre avec
+	restriction de stationnement
+
+R.* stationnement interdit - excepté
+
+^[SAPR].*
+
+
+PRINCIPES DU CODE
+
+
+Interdiction d'arrêter
+AD-XX
+AD-CD (côté droit)
+AE-XX (école)
+AT-XX
+AV-XX (indique les jours)
+AR-XX
+AV-XX
+- excepté
+AR-XX
+AV-RP (expeté autobus)
+AS-OS (sos)
+
+AD-TW (interdiction d'arrêter temporaire) panneau sur tôle
+
+\A 16h-18h30 LUN. AU VEN.
+
+
+Interdiction de stationner temporaire SD-XX
+SD-XX
+SD-TP (temp)
+- sur tôle
+SD-XW
+- sur carton pour déneigement
+SD-D(A|B)
+
+
+Interdiction de stationner (groupe S) SX-XX EX-XX R-XX RX-XX
+SX-XX
+
+- entretien (E) (interdit de stat) EU-XX
+EX-XX entretien
+
+SU groupe
+SB-XX (interdiction de stationner 1 MARS AU 1 DEC)
+SX-XX-A = SX-XX mais 1 avril au 1 déc
+
+- interdiction de stationner excepté R-XX RX-XX RV-JH°
+DONC R-XX OU RX-XX
+R-XX
+RB-QA
+SD-NQ SD-KA
+RV-JH
+
+- interdiction de stationner - réservé aux handicapés
+R-TD
+RD-XX
+RV-J[A-FGN]
+RX-XX
+
+- interdiction de stationner réservé
+\P RESERVE S3R 09h-21h LUN. AU VEN.	
+R-XX.*
+
+Limitation de stationner (groupe P) P*-**
+P*-**
+
+Stationnement tarifié
+PP-**
+SP-AC
+SP-AA
+SP-**
+
+Panonceau
+PX-**
+PANNONCEAU EXCEPTE AUTOBUS
+
+^[SAPR].*
+
+Divers (gr D) D-**
+OSEF
+
+Parcomètres
+CU-XX
+OSEF UN PEU
+
+CR-XX |
+intedit avec remorquage
+
+SYNTAXE
+
+\P interdit de stationner
+\A interdit d'arrêter
+P limitation de stationner
+
+
+PP Stationnement tarifié
+
+$weekday =
+"(?:(?:LUN\.?|LUNDI)|(?:MAR\.?|MARDI)|(?:MER\.?|MERCREDI)|
+(?:JEU\.?|JEUDI)|(?:VEN\.?|VENDREDI)|(?:SAM\.?|SAMEDI)|(?:DIM\.?|DIMANCHE)),?";
+$month =
+"(?:(?:JAN\.?|JANVIER)|(?:F[ée]V\.?|F[ée]VRIER)|MARS|AVRIL|MAI|JUIN|
+JUILLET|AO[ûu]T|(?:SEPT\.?|SEPTEMBRE)|(?:OCT\.?|OCTOBRE)|(?:NOV\.?|NOVEMBRE)|(?:D[ée]C\.?|D[ée]CEMBRE))"
+$monthDay =
+"([0-9]+|1er)"
+$timerange=
+"[0-9]+h[0-9]*( ?- ?| A )[0-9]+h[0-9]*"
+
+first : trim it !
+
+if 1 == R (interdit - excepté)
+	suppr parenthèses !
+\\P (?:(EXCEPTE|RESERVE|AUX) ([^0-9]+))|[a-zA-Z]+ SEULEMENT)? ?
+if 1 == S (interdit)
+\\P 
+if 1 == P (permis durée limitée)
+	first : suppr mot DEBARCADERE !
+P ([0-9]+ ?(min|H)([0-9]+)?) ?(min|H) ?:(EXCEPTE|RESERVE|AUX) ([^0-9]+))|[a-zA-Z] SEULEMENT)? ?
+if 12 == PX et équivalent stat interdit ou stat 
+PANONCEAU(?: $couleur )? (MAXIMUM [0-9]+ ?(min|H)([0-9]+)?
+
+(
+ $timerange (?:(?:ET)? ($timerange))? 
+(?:(?:($weekday)(?: (?:ET)?)?)+|($weekday AU $weekday))
+($weekday) (?:ET )?($weekday)
+mais if 3 == N
+(?:($weekday) AU? $weekday, ($weekday) AU? $weekday|[0-9]+/[0-9]+-[0-9]+/[0-9]+)?
+
+(?:($monthDay) ($month) (AU|A) ($monthDay) ($month))?
+( ET )?
+)
+
+( JOURS D'ECOLE)?
+
+if( 1 == P )
+	([a-zA-Z]+ SEULEMENT)?
+
+D'abord, chercher (EXCEPTE (([^0-9 ]+)+)) et le suppr !
+
+
+
+Stationnement tarifié :
+(HORAIRE DE )?STATIONNEMENT TARIFE(é) (EXCEPTE (AUTOBUS|TAXI))? [0-9]+h[0-9]*-[0-9]+h[0-9]*( [0-9]+h[0-9]*-[0-9]+h[0-9]*)? JOURSEM\.? (AU |A | ) JOURSEM\.? 
+
+Panonceau :
+PANONCEAU EXCEPTE HEURE DATE 15 Nov au 15 dec
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CORRECTIFS bases mysql
+signalisation-description-panneau
+PRIMARY PANNEAU_ID_PAN
+INDEX POTEAU_ID_POT
+DELETE :
+json_featuretype
+
+signalisation-descriptif-rpa
+add rows :
+- modify CODE_RPA VARCHAR(25)
+- vehicules VARCHAR (regexp des vehicules autorisés) 
+- type_signalisation : S (stat interdit ou permis à durée limitée) (inclut
+		donc P durée limitée, et R stationnement interdit excepté)
+		- PX pour pannonceau qui donne des indications en plus seulement (donc
+				doit être combiné avec les autres)
+		- A (arrêt interdit ou permis à durée limitée) 
+- temps_max (min) : durée max de stat si P
+- reservé (varchar : résevé à ...
+- image : lien vers l'image
+- amende : $$
+- tarifie : bool par défaut 0 
+		cela veut dire que ce n'est pas interdit mais plutot tarifié
+
++ Ajout table rpa-schedules
+- id PRIMARY AUTO_INCR
+- CODE_RPA (25), en relation avec la tble d'en haut FOREIGN KEY
+- cas (25), Le cas (ALL par défaut, SCHOOL_DAYS...)
+- schedule (255) : on doit utiliser cette chaine
+truc avec la classe DateSchedule que j'ai créé
+	\A 07h-18h LUN A VEN SEPT. A JUIN devient :
+	{ "all": ["W1-5 D7-18",...] }
+	autre Ex :
+	{ "clignotant" :  ["W1-5 D7-15"], "fixe":"W1-5 D15-18"}
+
+	(stationnement)
+
+et faire ça
+SELECT * FROM `signalisation-description-panneau-beta` LEFT JOIN
+`signalisation-descriptif-rpa-beta` ON
+`signalisation-descriptif-rpa-beta`.CODE_RPA=`signalisation-description-panneau-beta`.CODE_RPA
+WHERE `signalisation-descriptif-rpa-beta`.CODE_RPA IS NULL
+ET SUPR TOUTE !
+
+
+
++ table rpa-vehicules-autorisés # véhicules autorisés ("excepté CAMIOn" donc
+		camion est autorisé et pas les autres)
+- CODE_RPA (25) FOREIGN KEY
+- vehicule_id INT(11)  FOREIGN KEY
+
+
+
+FLECHE_PAN
+3 apparently dans le sens de la route

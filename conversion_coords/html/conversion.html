@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="utf-8" />
+		<title>conversion</title>
+	</head>
+	<body>
+		X : <input type="text" id="X"/><br/>
+		Y : <input type="text" id="Y"><br/>
+		<button onclick="convert()">Convertir</button>
+		<p id="result"></p>
+	<script>
+
+		function convert()
+		{
+			var E = parseFloat(document.getElementById("X").value); // en mètres
+			var N = parseFloat(document.getElementById("Y").value); // en mètres
+			
+			var Zone = 8; // Canada
+			var hemi = 1; // Hemisphere nord
+			
+			var latlng= convertKMUTMtoLatLng(E/1000, N/1000, Zone, hemi, true); // On divise sur 1000 pour convertir en km
+			
+			document.getElementById( "result" ).innerHTML = "Latitude : "+latlng.lat + ", Longitude : " + latlng.lng;
+		}
+		
+
+		function radtodeg(rad)
+		{
+			return rad * (180 / Math.PI);
+		}
+		function degtorad(deg)
+		{
+			return deg * (Math.PI / 180);
+		}
+		function convertKMUTMtoLatLng(E, N, Zone, hemi, MTM) // convert UTM X,Y coordinates in km to WGS84 Lat and Lng
+		{
+			var f = 1/298.257223563; // Flattening
+			if(hemi == 1) // northern hemisphere
+				var N0 = 0; // in km
+			else if(hemi == -1) // southern hemisphere
+				var N0 = 10000; // in km
+			
+			var k0 = 0.9996; // =scaleTM
+			if(MTM)
+				k0 = 0.9999;
+			var E0 = 500; // in km
+			if(MTM)
+				E0 = 304.8;
+			
+			var a = 6378.137; // Equatorial radius in km
+			
+			// Compute some preliminary values
+			var n = f/(2-f); // n = eccent (excentricité)
+//			var n = invf*1/(2 - 1/invf)
+			var A = (a/(1+n));
+			var temp = 1;
+			for(var i =2; i <= 6; i+=2) // Pas forcément jusqu'à 6 mais c'est juste plus de précision
+			{
+				temp += Math.pow( n , i) / Math.pow(4, i-1);
+			}
+			A = A * temp;
+			
+			var alpha= new Array();
+			alpha[0] = (1/2)*n  - (2/3)*n*n + (5/16)*n*n*n;
+			alpha[1] = n*n*(13/48) - n*n*n*(3/5);
+			alpha[2] = n*n*n*(61/240);
+			
+			var beta = new Array();
+			beta[0] = n*(1/2) - n*n*(2/3) + n*n*n*(37/96);
+			beta[1] = n*n*(1/48) + n*n*n*(1/15);
+			beta[2] = n*n*n*(17/480);
+			
+			var s = new Array();
+			s[0] = 2*n - n*n*(2/3) -2*n*n*n;
+			s[1] = (7/3) * n*n - n*n*n*(8/5);
+			s[2] = (56/15) * n*n*n;
+			
+			
+			// UTM (E, N, Zone, hemi) to latitude, longitude (hemi +1 for northern, -1 for southern) (E=X, N=Y
+			
+			// Intermediate values
+			var epsi = (N - N0)/(k0*A);
+			var nu = (E - E0)/(k0*A);
+			
+			var epsi_ = epsi;
+			var nu_ = nu;
+			var sigma_ = 1;
+			var tau_ = 0;
+			
+			for(var j =1; j <= 3; j++)
+			{
+				epsi_ -= beta[j-1] * Math.sin(2 * j * epsi) * Math.cosh(2 * j * nu);
+				nu_ -= beta[j-1] * Math.cos(2 * j * epsi) * Math.sinh(2 * j * nu);
+				sigma_ -= 2*j*beta[j-1]*Math.cos(2*j*epsi)*Math.cosh(2*j*nu);
+				tau_ += 2*j*beta[j-1] * Math.sin(2*j*epsi) * Math.sinh(2*j*nu);
+			}
+			var X = Math.asin( Math.sin(epsi_) / Math.cosh(nu_)   ); 
+			
+			// Final values !
+			var latitude = X; // LATITUDE !
+			
+			for(var j =1; j <= 3; j++)
+			{
+				//alert(s[""+j]);
+				latitude += s[j-1] * Math.sin(2*j*X);
+			}
+			// OBTENUE
+			
+			var lambda0 = Zone * degtorad(6) - degtorad(183);
+			//Zone * 6° - 183° : origine de la longitude
+			// ref meridian of longitude
+			if(MTM)
+			{
+			var mtmSmers =  // MTM zone to reference meridian
+      [0., 53., 56.,
+                      58.5, 61.5, 64.5, 67.5, 70.5, 73.5,
+       76.5, 79.5, 82.5,
+                          81., 84., 87., 90., 93., 96., 99.,
+       102., 105., 108., 111., 114., 117., 120., 123., 126.,
+       129., 132., 135., 138., 141.];
+				lambda0 = - degtorad(mtmSmers[Number(Zone)]);
+			}
+			var lambda_longitude = lambda0 + Math.atan( Math.sinh( nu_) / Math.cos( epsi_)  );
+			
+			var k = ((k0*A) / a) * Math.sqrt(   ( 1 + Math.pow( ((1-n)/(1+n))*Math.tan(latitude), 2)  )* ( (Math.pow(Math.cos(epsi_), 2) + Math.pow(Math.sinh(nu_), 2) ) / (   sigma_*sigma_   + tau_*tau_) ) );
+			//k : point scale factor
+
+			var gamma = hemi * Math.atan(  ( tau_ + sigma_*Math.tan(epsi_)*Math.tanh(nu_) ) /  ( sigma_ - tau_*Math.tan(epsi_)*Math.tanh(nu_)   )     );
+			// gamma: meridian convergence angle
+			
+			return {lat : radtodeg(latitude), lng : radtodeg(lambda_longitude) };
+			
+		}
+</script>
+	</body>
+</html>

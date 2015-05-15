@@ -1,0 +1,6 @@
+{"name":"json_sortie","type":"FeatureCollection"
+,"features":[
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-73.63727430438747,45.54139872662906]},"properties":{"POTEAU_ID_POT":122476,"DATE_CONCEPTION_POT":20101216000000,"DESCRIPTION_REP":"Enlevé","DESCRIPTION_RTP":"2- Tige et manchon","X":294079.844,"Y":5044618.5,"ID_ARRONDISSEMENT":"25","TRC_ID":1110499}}
+,{"type":"Feature","geometry":{"type":"Point","coordinates":[45.55309838921263,-73.60104960009102]},"properties":{"POTEAU_ID_POT":5766,"DATE_CONCEPTION_POT":20090707000000,"DESCRIPTION_REP":"Réel","DESCRIPTION_RTP":"3- Fût","X":296910.375,"Y":5045914.5,"ID_ARRONDISSEMENT":"25","TRC_ID":1090130}}
+
+]}

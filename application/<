@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			html,body{width:100%; height:100%}
+			.spinner {
+
+				border-radius: 100%;  
+				-webkit-animation: scaleout 1.0s infinite ease-in-out;
+				animation: scaleout 1.0s infinite ease-in-out;
+				font-family:"Font Awesome";
+			}
+
+			@-webkit-keyframes scaleout {
+				0% { -webkit-transform: scale(0.0) }
+				100% {
+					-webkit-transform: scale(1.0);
+					opacity: 0;
+				}
+			}
+
+			@keyframes scaleout {
+				0% { 
+					transform: scale(0.0);
+					-webkit-transform: scale(0.0);
+					} 100% {
+					transform: scale(1.0);
+					-webkit-transform: scale(1.0);
+					opacity: 0;
+				}
+			}
+
+
+		/*	.navbar
+			{
+	 			background-image: -o-linear-gradient(top,#2192e9 0,#8cc6f3 100%)!important;
+				background-image: -webkit-gradient(linear,left top,left bottom,from(#2192e9),to(#8cc6f3))!important;
+				background-image: linear-gradient(to bottom, #2192e9 0,#8cc6f3 100%)!important;
+				color:black;
+			}
+			.nav
+			{color:black;}
+		#navbar, .navbar-header
+		{
+		}*/
+			#map
+			{
+				position:absolute;
+				top:0;
+				left:0;
+				width:100%;
+			}
+			#info
+			{
+				z-index:100000;
+				display:none;
+				position:absolute;
+				top:0;
+				left:0;
+				width:100%;
+				background-color: rgba(10,10,10,0.3);
+			}
+			#info .wall
+			{
+				padding-top:10px;
+				position:relative;
+				-webkit-box-shadow: -7px 0px 12px 0px rgba(50, 50, 50, 0.75) inset;
+				-moz-box-shadow:    -7px 0px 12px 0px rgba(50, 50, 50, 0.75) inset;
+				box-shadow:         -7px 0px 12px 0px rgba(50, 50, 50, 0.75) inset;
+				width:50%;
+				height:100%;
+				background-color:rgb(240,240,240);
+			}
+
+	/*		.cross {
+				width: 100px;
+				height: 100px;
+				position: relative;
+				transform:rotate(45deg);
+				-ms-transform:rotate(45deg); 
+				-webkit-transform:rotate(45deg);
+			}
+
+			.cross:before, #cross:after {
+				content: "";
+				position: absolute;
+				z-index: -1;
+				background: #d00;
+			}
+
+			.cross:before {
+				left: 50%;
+				width: 30%;
+				margin-left: -15%;
+				height: 100%;
+			}
+
+			.cross:after {
+				top: 50%;
+				height: 30%;
+				margin-top: -15%;
+				width: 100%;
+			}*/
+			.wall .cross
+			{
+				position:absolute;
+				right:0;
+				top:0;
+				margin-right:15px;
+			}
+			.wall .content
+			{
+				padding:5px;
+				padding-left:10px;
+				padding-right:10px;
+				font-family: "FontAwesome";
+				font-size:8px;
+				font-weight:bold;
+			}
+			.cross
+			{
+				width:50px;
+				font-weight:bold;
+				height:50px;
+	/* 			content: "\274c"; use the hex value here... */
+				font-size: 20px; 
+				color: dark;
+				line-height: 50px;
+				text-align: center;
+				cursor:pointer;
+			}
+			.cross:hover
+			{
+				color:grey;
+			}
+
+			.fill-height {
+				min-height: 100%;
+				height:auto !important; 
+				height: 100%; 
+			}
+			img.panneau
+			{
+				height:80px;
+				margin-bottom:5px;
+			}
+
+			.locate_control
+			{
+				background-color:white;
+				border:1px solid grey;
+				padding:2.5px;
+				margin:2.5px;
+				border-radius: 25px;
+			}
+			.locate_control:hover
+			{
+				background-color:white;
+				opacity:1;
+			}
+			.locate_control.pending
+			{
+				opacity:1;
+			}
+			.locate_control.watching
+			{
+			}
+
+			img.locate_me
+			{
+				width:30px;
+				cursor:pointer;
+			}
+			body {
+				padding-top: 50px;
+			}
+			.map-contain {
+				height:100%!important;
+				padding:0px!important;
+				position:relative;
+			}
+
+
+			.controls {
+				margin-top:16px;
+				border: 1px solid transparent;
+				border-radius: 2px 0 0 2px;
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				min-height: 32px;
+				outline: none;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+			}
+
+			#pac-input {
+			background-color: #fff;
+			font-family: Roboto;
+			font-size: 15px;
+			font-weight: 300;
+			margin-left: 12px;
+			padding: 0 11px 0 13px;
+			text-overflow: ellipsis;
+		}
+
+		img.img_brand
+		{width:40px;}
+		
+		#reglages
+		{
+		font-size:14px;
+		}
+
+			@media only screen and (min-width : 320px){
+				#pac-input { 
+				width: 250px;
+				}
+				img.locate_me{
+				width:30px;
+			}
+			#info .wall
+			{
+				width:80%;
+				padding:3px;
+				padding-left:10px;
+
+			}
+			#info .wall .content
+			{
+				font-size:11px;
+				}
+			#choix_affichage img
+			{
+				height:20px;
+
+			}
+			#choix_affichage button
+			{
+				font-size:8px;
+			}
+			}
+
+			/* Extra Small Devices, Phones */
+			@media only screen and (min-width : 480px){
+				#pac-input{
+					width:350px;
+				}
+				img.locate_me{
+					width:35px;
+				}
+				#info .wall
+				{
+					width:60%;
+				}
+				#info .wall	.content
+				{
+					font-size:11px;
+					}
+					#reglages
+					{font-size:18px;}
+
+			}
+
+			/* Small Devices, Tablets */
+			@media only screen and (min-width : 768px){
+				img.locate_me{
+				width:40px;
+			}
+			#pac-input
+			{width:500px;
+			}
+			#info .wall
+			{
+				width:60%;
+			}
+			#info .wall .content
+			{
+
+				font-size:12px;
+				}
+			.controls,#pac-input
+			{
+			line-height:40px;
+			font-size:23px;
+			}
+			#choix_affichage img			{
+				height:40px;
+
+			}
+			#choix_affichage button
+			{
+				font-size:28px;
+			}
+
+			#reglages
+			{font-size:23px;
+			}
+			}
+
+			/* Medium Devices, Desktops */
+			@media only screen and (min-width : 992px){
+			#info .wall .content
+			{
+				font-size:18px;
+			
+				}
+				img.locate_me{width:40px;}
+			img.panneau
+			{
+				height:100px;
+				margin-bottom:10px;
+			}
+			.navbar 
+			{
+				font-size:30px;
+			}
+			img.img_brand
+			{
+				width:50px;
+				}
+			#choix_affichage img
+			{
+				height:50px;
+
+			}
+			#choix_affichage button
+			{
+				font-size:38px;
+				}
+				#reglages
+				{font-size:32px;}
+
+			}
+
+			/* Large Devices, Wide Screens */
+			@media only screen and (min-width : 1200px){
+			}
+
+
+			#pac-input:focus {
+				border-color: #4d90fe;
+			}
+
+			.pac-container {
+				font-family: Roboto;
+			}
+		</style>
+		<meta charset="utf-8" />
+
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />	
+		<title>index2</title>
+
+		<link href="font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
+		
+	<!--	<link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.min.css" />
+	-->
+		<!--[if lt IE 9]>
+		    <link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.ie.min.css"/>
+		<![endif]-->
+
+
+<!--		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+		<script>
+function initold()
+{
+	detectBrowser();
+	var styleArray = [
+	{
+		/*
+		featureType: 'road',
+		elementType : 'geometry.fill',
+		stylers:[
+			{color : '#ff0000'},
+			]*/
+	}
+		];
+	
+	var controlDiv = document.createElement('div');
+	controlDiv.style.padding="5px";
+	var controlUI = document.createElement('div');
+	controlUI.style.backgroundColor = 'black';
+	controlUI.style.borderStyle = 'solid';
+	controlUI.style.borderWidth = '2px';
+	controlUI.style.brderColor ='grey';
+	controlUI.style.cursor = 'pointer';
+	controlUI.style.textAlign ='center';
+	controlUI.title ='Click to set the map to home';
+	controlDiv.appendChild(controlUI);
+	
+// Set CSS for the control interior.
+var controlText = document.createElement('div');
+controlText.style.fontFamily = 'Arial,sans-serif';
+controlText.style.fontSize = '12px';
+controlText.style.color ='white';
+controlText.style.paddingLeft = '4px';
+controlText.style.paddingRight = '4px';
+
+var savehome = document.createElement('a');
+savehome.innerHTML = 'Click to save home';
+//controlText.innerHTML = '<a id="savehome">Click to save home</a>';
+//controlText.innerHTML += '<strong><a id="gohome">Go Home</a></strong>';
+var gohome = document.createElement('a');
+gohome.innerHTML = 'Go home';
+
+	controlText.appendChild(savehome);
+	controlText.appendChild(document.createElement('br'));
+	
+	if( localStorage.getItem('homelat') && localStorage.getItem('homelng') )
+		controlText.appendChild(gohome);
+
+	controlUI.appendChild(controlText);	
+	
+	controlDiv.index = 1;
+//	var centerPos = new google.maps.LatLng(localStorage.getItem('homelat') ||lat, localStorage.getItem('homelng')||lng);
+	
+	var mapOptions = { zoom : 8, styles:styleArray, disableDefaultUI:true, zoomControl:true, };
+	var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	
+	f_gohome();
+	
+	map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+	
+	map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/get/troncons.php");
+	map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/get/poteaux.php");
+
+//	map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/ARRONDISSEMENTS/limadmin.json");
+
+	//map.data.loadGeoJson("http://adam.cherti.name/CREE%20TA%20VILLE/GEOBASE/sens_circ.json");
+	
+	
+	var infoWindow = new google.maps.InfoWindow();
+/*	map.data.setStyle(
+			function (feature)
+			{
+	//		var CODE_ID = feature.getProperty("CODEID");
+	//		var NOM = feature.getProperty("NOM");
+			var strokec = "blue";
+			if(feature.getProperty("TYP_VOIE") === undefined)
+			strokec = "green";
+			return {
+//				label : NOM,
+				fillOpacity:0.4,
+				strokeColor:strokec,
+				strokeWeight:3,
+				fillColor:"orange",
+				strokeOpacity:0.7,
+				};
+				})*/;
+	map.data.addListener('click', function(event)
+			{
+				var feature = event.feature;
+				//var CODE_ID = feature.getProperty("CODEID");
+				//var NOM = feature.getProperty("NOM");	
+				//alert('you clicked!');
+				//var content_string = CODE_ID + " "+NOM;
+				
+				//var content_string = feature.getProperty("TYP_VOIE")+ feature.getProperty("NOM_VOIE") + feature.getProperty("ID_TRC");
+				
+				var content_string = feature.getProperty("ID_TRC");
+				content_string +=" "+feature.getProperty("TYP_VOIE")+ " "+feature.getProperty("NOM_VOIE");
+				content_string += " "+feature.getProperty("NOM") + " poteau:"+feature.getProperty("POTEAU_ID_POT")+ ", TRC ID : "+feature.getProperty("TRC_ID");
+				
+				infoWindow.setContent(content_string);
+				infoWindow.setPosition(event.latLng);
+				infoWindow.open(map);
+			});
+	google.maps.event.addDomListener(savehome, 'click', function()
+			{
+				localStorage.setItem('homelat',map.getCenter().lat());
+				localStorage.setItem('homelng',map.getCenter().lng());	
+			});
+	google.maps.event.addDomListener(gohome, 'click', function()
+			{
+				f_gohome();
+			});
+function f_gohome()
+{
+var lat = 45.553349634491; var lng =-73.611958006357;
+//	lat = localStorage.getItem('homelat');
+//	lng = localStorage.getItem('homelng')
+
+var centerPos = new google.maps.LatLng(lat,lng);
+//centerPos = new google.maps.LatLng( 45.54139872662906,-73.63727430438747 );
+if(!isNaN(centerPos.lat()) && !isNaN(centerPos.lng()))
+{
+map.setCenter(centerPos);
+map.setZoom(20);	
+}
+
+}
+}
+		</script>
+	</head>
+	<body>
+
+		<nav class="navbar navbar-fixed-top" style="">
+		<div class="container-fluid">
+			<div class="navbar-inner">
+				<a style="padding-top:5px; padding-bottom:5px" class="brand navbar-brand" href="#">
+					<img class="img_brand" src="images/logo.png" />
+				</a>
+				<!--		<span class="glyphicon glyphicon-menu-hamburger"></span>-->
+				<ul class="nav navbar-nav">
+					<li id="button_reglages"><a href="#" >Réglages</a></li>
+				</ul>
+		</div>
+		</nav>
+	<!--	<div class="btn-group" role="group" aria-label="..." id="choix_affichage">
+			<button type="button" id="stats" class="btn btn-default"><img height="40px" src="images/parking_forbidden.jpg"/></button>
+			<button type="button" id="arrets" class="btn btn-default"><img height="40px" src="images/stop_forbidden.png"/></button>
+			<button type="button" id="rien" class="btn btn-default" style="font-size:28px">Rien</button>
+		</div>-->
+
+
+		<div class="container-fluid map-contain">
+			<div id="map-contain">
+				<div id="info">
+					<div class="wall">
+						<div class="cross" id="close_info">
+							&#10005;
+						</div>
+						<div id="reglages">
+							<br/>
+							<p>Choisissez quoi montrer :</p>
+							<div class="btn-group" role="group" aria-label="..." id="choix_affichage">
+							<button type="button" id="stats" class="btn btn-default">
+								<img src="images/parking_forbidden.jpg"/></button>
+							<button type="button" id="arrets" class="btn btn-default">
+								<img src="images/stop_forbidden.png"/></button><button type="button" id="rien" class="btn btn-default" >Rien</button>
+							</div>
+							<p>Choisissez l'heure</p>
+						</div>
+						
+						<p class="content">
+						
+						</p>
+					</div>
+				</div>
+				<div id="search_div">
+<!--					<select class="form-control" name="montrer">
+						<option>Stationnement</option>
+						<option>Arrêt</option>
+					</select>-->
+					<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+				</div>
+				<div id="map">
+				</div>
+			</div>
+
+		</div><!-- /.container -->
+
+
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
+		<!-- leaflet
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+		locate control
+		<script src="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.min.js" ></script>
+		-->
+<!--		google maps-->
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAcPswPf-CHjpRLEqDYPj7hBeycynREWpY&sensor=true"></script>
+<!--		<script src="http://matchingnotes.com/javascripts/leaflet-google.js"></script>-->
+
+<script src="http://chadkillingsworth.github.io/geolocation-marker/dist/geolocationmarker-compiled.js"></script>
+		<script src="locateGmap.js"></script>
+		<script src="stat.js"></script>
+		<script>
+			$(document).ready(function()
+			{
+				var h = $("body").height();
+				$("#map").height(h);
+				$("#map-contain").height(h);
+				$("#info").height(h);
+
+				init();
+			});
+		</script>
+
+
+	</body>
+</html>
